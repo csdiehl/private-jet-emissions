@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Earthquakes around the world</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-slate.css">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/stdlib/inputs.css">
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-slate.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.css">
+<link rel="modulepreload" href="./_observablehq/client.js">
+<link rel="modulepreload" href="./_observablehq/runtime.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.js">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.13/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/binary-search-bounds@2.0.5/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-array@3.2.4/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-axis@3.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-brush@3.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-chord@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-color@3.1.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-contour@4.0.2/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-delaunay@6.0.4/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-dispatch@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-drag@3.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-dsv@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-ease@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-fetch@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-force@3.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-format@3.1.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-geo@3.1.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-hierarchy@3.1.2/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-interpolate@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-path@3.1.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-polygon@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-quadtree@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-random@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-scale@4.0.2/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-selection@3.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-shape@3.2.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-time-format@4.1.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-time@3.1.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-timer@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-transition@3.0.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3-zoom@3.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/d3@7.8.5/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/delaunator@5.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/htl@0.3.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/internmap@2.0.3/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/interval-tree-1d@1.0.4/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/isoformat@0.2.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/robust-predicates@3.0.2/+esm">
+<script type="module">
+
+import {define} from "./_observablehq/client.js";
+
+define({id: "56d1ad95", inputs: ["FileAttachment"], outputs: ["flightsByOwner","od","aircraft","sortedPpl"], files: [{"name":"./data/flights.csv","mimeType":"text/csv","path":"./_file/data/flights.csv"},{"name":"./data/od.csv","mimeType":"text/csv","path":"./_file/data/od.csv"},{"name":"./data/aircraft.csv","mimeType":"text/csv","path":"./_file/data/aircraft.csv"}], body: async (FileAttachment) => {
+const flightsByOwner = await FileAttachment("data/flights.csv").csv({
+  typed: true,
+})
+
+const od = await FileAttachment("data/od.csv").csv({
+  typed: true,
+})
+
+const aircraft = await FileAttachment("data/aircraft.csv").csv({
+  typed: true,
+})
+
+const sortedPpl = flightsByOwner
+  .toSorted((a, b) => b.total_time_hrs - a.total_time_hrs)
+  .slice(0, 20)
+return {flightsByOwner,od,aircraft,sortedPpl};
+}});
+
+define({id: "0ac6e46d", inputs: ["Plot","flightsByOwner","display"], body: async (Plot,flightsByOwner,display) => {
+display(await(
+Plot.plot({
+  marginLeft: 100,
+  marks: [
+    Plot.barX(flightsByOwner.slice(0, 20), {
+      x: "flights",
+      y: "owner",
+      sort: { y: "-x" },
+    }),
+  ],
+})
+))
+}});
+
+define({id: "9a35189d", inputs: ["Plot","sortedPpl","display"], body: async (Plot,sortedPpl,display) => {
+display(await(
+Plot.plot({
+  marginLeft: 100,
+  marks: [
+    Plot.barX(sortedPpl, {
+      x: "total_time_hrs",
+      y: "owner",
+      sort: { y: "-x" },
+    }),
+  ],
+})
+))
+}});
+
+define({id: "14938200", inputs: ["Plot","width","flightsByOwner","display"], body: async (Plot,width,flightsByOwner,display) => {
+display(await(
+Plot.plot({
+  width: width,
+  height: 500,
+  grid: true,
+  marks: [
+    Plot.dot(flightsByOwner, {
+      x: "total_time_hrs",
+      y: "flights",
+    }),
+    Plot.text(flightsByOwner.slice(0, 20), {
+      x: "total_time_hrs",
+      y: "flights",
+      text: (d) => d.owner,
+      fill: "#FFF",
+      dy: -6,
+    }),
+  ],
+})
+))
+}});
+
+define({id: "dfd94122", inputs: ["Plot","display"], body: async (Plot,display) => {
+display(await(
+Plot.plot({
+  projection: {
+    type: "orthographic",
+    rotate: [110, -30],
+  },
+  marks: [
+    Plot.graticule(),
+    Plot.sphere(),
+    // Plot.geo(land, { stroke: "var(--theme-foreground-faint)" }),
+  ],
+})
+))
+}});
+
+define({id: "79469024", inputs: ["Inputs","aircraft","display"], body: async (Inputs,aircraft,display) => {
+display(await(
+Inputs.table(aircraft)
+))
+}});
+
+</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<style>
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--sans-serif);
+  margin: 4rem 0 8rem;
+  text-wrap: balance;
+  text-align: center;
+}
+
+.hero h1 {
+  margin: 2rem 0;
+  max-width: none;
+  font-size: 14vw;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(30deg, var(--theme-foreground-focus), red);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero h2 {
+  margin: 0;
+  max-width: 34em;
+  font-size: 20px;
+  font-style: initial;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--theme-foreground-muted);
+}
+
+@media (min-width: 640px) {
+  .hero h1 {
+    font-size: 90px;
+  }
+}
+
+</style>
+<div class="hero">
+  <h1>Private Jet Emissions</h1>
+  <h2>and why they are bad</h2>
+</div><span>
+</span><div id="cell-56d1ad95" class="observablehq observablehq--block"></div>
+<h2 id="private-jet-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#private-jet-emissions">Private Jet Emissions</a></h2>
+<p>Every few months celebrities face intense scrutiny on social media for their private jet usage. But a much longer list of business executives, public figures, and politicians indulge in luxury travel. Although corporate activity, rather than personal consumption, accounts for most emissions, these people emit more than some enterprises and large swaths of the general public.</p>
+<p>Forbes lists about 2,095 billionaires. Their outsize emissions mainly stem from transportation. The super-wealthy maintain fleets of private jets, superyachts and other vehicles. A single superyacht produces emissions equal to the total consumption pattern of 167 average American households. Elon Musk took at least 114 private jet flights in 2023, which emits at least 285 times more carbon in that year than the average American flying commercial.</p>
+<h2 id="who-flew-the-most%3F" tabindex="-1"><a class="observablehq-header-anchor" href="#who-flew-the-most%3F">Who flew the most?</a></h2>
+<p>Let's look at who took the most private jet flights in 2023.</p>
+<div id="cell-0ac6e46d" class="observablehq observablehq--block observablehq--loading"></div>
+<h2 id="who-spent-the-most-time-flying%3F" tabindex="-1"><a class="observablehq-header-anchor" href="#who-spent-the-most-time-flying%3F">Who spent the most time flying?</a></h2>
+<p>Here are the people who spent the most time in the air.</p>
+<div id="cell-9a35189d" class="observablehq observablehq--block observablehq--loading"></div>
+<p>Total time spent flying is clearly correlated with the number of trips taken. Some of the people who took the most trips also spent the longest in the air.</p>
+<div id="cell-14938200" class="observablehq observablehq--block observablehq--loading"></div>
+<h2 id="many-of-these-flights-are-short-hops-that-replace-car-trips." tabindex="-1"><a class="observablehq-header-anchor" href="#many-of-these-flights-are-short-hops-that-replace-car-trips.">Many of these flights are short hops that replace car trips.</a></h2>
+<p>It's particularly alarming that many flights are 30 minutes or less.</p>
+<p>Most flights are under an hour or two. It's rare for flights to be over 3hrs.</p>
+<h2 id="where-are-they-going%3F" tabindex="-1"><a class="observablehq-header-anchor" href="#where-are-they-going%3F">Where are they going?</a></h2>
+<p>Here is a plot of flights around the world.</p>
+<div id="cell-dfd94122" class="observablehq observablehq--block observablehq--loading"></div>
+<h2 id="what-are-they-flying-in%3F" tabindex="-1"><a class="observablehq-header-anchor" href="#what-are-they-flying-in%3F">What are they flying in?</a></h2>
+<p>Here are the most popular aircraft types. Some of the most popular manufacturers include Dassault and Bombardier.</p>
+<div id="cell-79469024" class="observablehq observablehq--block observablehq--loading"></div>
+</main>
+<footer id="observablehq-footer">
+<div>Produced by AP News</div>
+</footer>
+</div>
