@@ -2,6 +2,8 @@
 
 This is a data visualization of a dataset of 17k private jet flights from 200 people in 2023 that I collected using the OpenSky API.
 
+Preview the site [here](https://csdiehl.github.io/private-jet-emissions/).
+
 It demonstrates the use of the new Observable 2.0 Framework. This project uses a python data loader to load and transform data from an S3 bucket before visualizing using Javascript and Markdown.
 
 This is a significant advantage over the old way of doing the analysis in a separate repo, pushing to S3, then either downloading and uploading to observable or setting up a separate frontend to display the data.
