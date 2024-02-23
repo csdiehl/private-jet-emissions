@@ -20,6 +20,10 @@ Tables are produced using Observable's native `Inputs.table()` function, which i
 
 You can also use D3 for custom charts!
 
+## Deployment
+
+After running `yarn build` Observable generates a static site and writes it to the `dist` directory. This can be deployed anywhere.
+
 ## Setup
 
 Important: you have to be using node >= 20 for this to work.
