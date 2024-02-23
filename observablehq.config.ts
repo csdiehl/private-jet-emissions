@@ -23,6 +23,6 @@ export default {
   sidebar: false,
   toc: false, // whether to show the table of contents
   pager: false, // whether to show previous & next links in the footer
-  // root: "docs", // path to the source root for preview
-  // output: "dist", // path to the output root for build
+  root: "project", // path to the source root for preview
+  output: "docs", // path to the output root for build
 }
