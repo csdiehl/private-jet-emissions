@@ -52,6 +52,7 @@
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/interval-tree-1d@1.0.4/+esm">
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/isoformat@0.2.1/+esm">
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/robust-predicates@3.0.2/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm">
 <script type="module">
 
 import {define} from "./_observablehq/client.js";
@@ -75,7 +76,7 @@ const sortedPpl = flightsByOwner
 return {flightsByOwner,od,aircraft,sortedPpl};
 }});
 
-define({id: "0ac6e46d", inputs: ["Plot","flightsByOwner","display"], body: async (Plot,flightsByOwner,display) => {
+define({id: "3510ce5f", inline: true, inputs: ["Plot","flightsByOwner","display"], body: async (Plot,flightsByOwner,display) => {
 display(await(
 Plot.plot({
   marginLeft: 100,
@@ -90,15 +91,58 @@ Plot.plot({
 ))
 }});
 
-define({id: "9a35189d", inputs: ["Plot","sortedPpl","display"], body: async (Plot,sortedPpl,display) => {
+define({id: "99c41048", inputs: ["visibility","FileAttachment","topojson","html","Generators"], outputs: ["flights","landData","land","flightsGeo","personInput","person"], files: [{"name":"./data/2023_flights_geodata.json","mimeType":"application/json","path":"./_file/data/2023_flights_geodata.json"}], body: async (visibility,FileAttachment,topojson,html,Generators) => {
+await visibility()
+
+const flights = await FileAttachment("./data/2023_flights_geodata.json").json()
+const landData = await fetch(
+  "https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json"
+).then((d) => d.json())
+
+const land = topojson.feature(landData, landData.objects.land)
+
+const flightsGeo = topojson.feature(
+  flights,
+  flights.objects["2023_flights_geodata"]
+)
+
+const personInput = html`<select id="ppl-select">
+  <option value="Elon Musk">Elon Musk</option>
+  <option value="Jeff Bezos">Jeff Bezos</option>
+  <option value="Lawrence Stroll">Lawrence Stroll</option>
+</select>`
+const person = Generators.input(personInput)
+return {flights,landData,land,flightsGeo,personInput,person};
+}});
+
+define({id: "38a81e87", inline: true, inputs: ["person","display"], body: async (person,display) => {
+display(await(
+person
+))
+}});
+
+define({id: "ce5fa528", inline: true, inputs: ["personInput","display"], body: async (personInput,display) => {
+display(await(
+personInput
+))
+}});
+
+define({id: "5986b88e", inline: true, inputs: ["Plot","width","land","flightsGeo","person","display"], body: async (Plot,width,land,flightsGeo,person,display) => {
 display(await(
 Plot.plot({
-  marginLeft: 100,
+  width: width,
+  projection: {
+    type: "orthographic",
+    rotate: [60, -40],
+  },
   marks: [
-    Plot.barX(sortedPpl, {
-      x: "total_time_hrs",
-      y: "owner",
-      sort: { y: "-x" },
+    Plot.graticule(),
+    Plot.sphere(),
+    Plot.geo(land, { stroke: "white", opacity: 0.5 }),
+    Plot.geo(flightsGeo, {
+      filter: (d) => d.properties.owner == person,
+      stroke: "#53d8fb",
+      opacity: 0.3,
     }),
   ],
 })
@@ -128,23 +172,7 @@ Plot.plot({
 ))
 }});
 
-define({id: "dfd94122", inputs: ["Plot","display"], body: async (Plot,display) => {
-display(await(
-Plot.plot({
-  projection: {
-    type: "orthographic",
-    rotate: [110, -30],
-  },
-  marks: [
-    Plot.graticule(),
-    Plot.sphere(),
-    // Plot.geo(land, { stroke: "var(--theme-foreground-faint)" }),
-  ],
-})
-))
-}});
-
-define({id: "79469024", inputs: ["Inputs","aircraft","display"], body: async (Inputs,aircraft,display) => {
+define({id: "78675dc9", inline: true, inputs: ["Inputs","aircraft","display"], body: async (Inputs,aircraft,display) => {
 display(await(
 Inputs.table(aircraft)
 ))
@@ -154,6 +182,10 @@ Inputs.table(aircraft)
 <div id="observablehq-center">
 <main id="observablehq-main" class="observablehq">
 <style>
+
+:root {
+  --main-color: #53d8fb;
+}
 
 .hero {
   display: flex;
@@ -171,7 +203,7 @@ Inputs.table(aircraft)
   font-size: 14vw;
   font-weight: 900;
   line-height: 1;
-  background: linear-gradient(30deg, var(--theme-foreground-focus), red);
+  background: linear-gradient(30deg, var(--theme-foreground-focus), var(--main-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -193,32 +225,83 @@ Inputs.table(aircraft)
   }
 }
 
+html, body {
+    font-family: sans-serif;
+}
+
+h2 {
+  color: var(--main-color);
+}
+
+p {
+  opacity: .8;
+}
+
+.intro {
+  height: 80vh;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  }
+
+  section {
+    margin: 0 0 80px;
+  }
+
+  select {
+    height: 48px;
+    border-radius: 10px;
+    padding: 0 16px;
+    color: #FFF;
+
+  }
+
+  #selector {
+    display: flex;
+    justify-content: space-between;
+  }
+
 </style>
 <div class="hero">
   <h1>Private Jet Emissions</h1>
   <h2>and why they are bad</h2>
 </div><span>
 </span><div id="cell-56d1ad95" class="observablehq observablehq--block"></div>
-<h2 id="private-jet-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#private-jet-emissions">Private Jet Emissions</a></h2>
+<div class="intro">
+<div>
+<h2>Private Jet Emissions</h2>
 <p>Every few months celebrities face intense scrutiny on social media for their private jet usage. But a much longer list of business executives, public figures, and politicians indulge in luxury travel. Although corporate activity, rather than personal consumption, accounts for most emissions, these people emit more than some enterprises and large swaths of the general public.</p>
 <p>Forbes lists about 2,095 billionaires. Their outsize emissions mainly stem from transportation. The super-wealthy maintain fleets of private jets, superyachts and other vehicles. A single superyacht produces emissions equal to the total consumption pattern of 167 average American households. Elon Musk took at least 114 private jet flights in 2023, which emits at least 285 times more carbon in that year than the average American flying commercial.</p>
-<h2 id="who-flew-the-most%3F" tabindex="-1"><a class="observablehq-header-anchor" href="#who-flew-the-most%3F">Who flew the most?</a></h2>
+</div>
+</div>
+<section>
+<h2>Who flew the most?</h2>
 <p>Let's look at who took the most private jet flights in 2023.</p>
-<div id="cell-0ac6e46d" class="observablehq observablehq--block observablehq--loading"></div>
+<div class="card">
+<span id="cell-3510ce5f" class="observablehq--loading"></span>
+</div>
+</section>
+<div id="cell-99c41048" class="observablehq observablehq--block"></div>
+<section>
+<div id="selector">
+<h2>Where is <span id="cell-38a81e87" class="observablehq--loading"></span> going?</h2>
+<span id="cell-ce5fa528" class="observablehq--loading"></span>
+</div>
+<div>
+<span id="cell-5986b88e" class="observablehq--loading"></span>
+</div>
+</section>
 <h2 id="who-spent-the-most-time-flying%3F" tabindex="-1"><a class="observablehq-header-anchor" href="#who-spent-the-most-time-flying%3F">Who spent the most time flying?</a></h2>
-<p>Here are the people who spent the most time in the air.</p>
-<div id="cell-9a35189d" class="observablehq observablehq--block observablehq--loading"></div>
 <p>Total time spent flying is clearly correlated with the number of trips taken. Some of the people who took the most trips also spent the longest in the air.</p>
 <div id="cell-14938200" class="observablehq observablehq--block observablehq--loading"></div>
 <h2 id="many-of-these-flights-are-short-hops-that-replace-car-trips." tabindex="-1"><a class="observablehq-header-anchor" href="#many-of-these-flights-are-short-hops-that-replace-car-trips.">Many of these flights are short hops that replace car trips.</a></h2>
 <p>It's particularly alarming that many flights are 30 minutes or less.</p>
 <p>Most flights are under an hour or two. It's rare for flights to be over 3hrs.</p>
-<h2 id="where-are-they-going%3F" tabindex="-1"><a class="observablehq-header-anchor" href="#where-are-they-going%3F">Where are they going?</a></h2>
-<p>Here is a plot of flights around the world.</p>
-<div id="cell-dfd94122" class="observablehq observablehq--block observablehq--loading"></div>
 <h2 id="what-are-they-flying-in%3F" tabindex="-1"><a class="observablehq-header-anchor" href="#what-are-they-flying-in%3F">What are they flying in?</a></h2>
 <p>Here are the most popular aircraft types. Some of the most popular manufacturers include Dassault and Bombardier.</p>
-<div id="cell-79469024" class="observablehq observablehq--block observablehq--loading"></div>
+<div class="card">
+<span id="cell-78675dc9" class="observablehq--loading"></span>
+</div>
 </main>
 <footer id="observablehq-footer">
 <div>Produced by AP News</div>
